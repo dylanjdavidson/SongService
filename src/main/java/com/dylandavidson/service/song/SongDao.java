@@ -1,0 +1,105 @@
+package com.dylandavidson.service.song;
+
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.Morphia;
+import org.mongodb.morphia.query.Query;
+
+import com.mongodb.MongoClient;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
+
+public class SongDao {
+
+	private final Datastore datastore;
+
+	public static SongDao newSongDao() throws UnknownHostException {
+
+		Morphia morphia = new Morphia();
+		ServerAddress serverAddress = new ServerAddress(
+				"ds029793.mongolab.com", 29793);
+		List<MongoCredential> credentialsList = new ArrayList<MongoCredential>();
+		MongoCredential credentia = MongoCredential.createCredential(
+		    "dylan", "song-service", "dylan".toCharArray());
+		credentialsList.add(credentia);
+		MongoClient client = new MongoClient(serverAddress, credentialsList);
+		Datastore datastore = morphia.createDatastore(client, "song-service");
+		
+		return new SongDao(datastore);
+	}
+
+	public void saveSong(SongDO songDo) {
+		this.datastore.save(songDo);
+	}
+
+//	public KeywordEntity getKeyword(String keyword) {
+//		return this.datastore.get(KeywordEntity.class, keyword);
+//	}
+//
+//	public void deleteQuestion(String keyword) {
+//		this.datastore.delete(KeywordEntity.class, keyword);
+//	}
+//
+//	public Query<KeywordEntity> createQuery() {
+//		return this.datastore.createQuery(KeywordEntity.class);
+//	}
+//
+//	public List<QuestionKeywordReference> findReferenceByKeywordList(
+//			List<String> keywords) {
+//
+//		// Query for all of the KeywordQuestion objects associated to the
+//		// keywords
+//		Query<KeywordEntity> keywordEntityQuery = createQuery().field("_id").hasAnyOf(keywords);
+//		List<KeywordEntity> keywordEntites = keywordEntityQuery.asList();
+//
+//		// Iterate through the keyword entities and build a
+//		// QuestionKeywordReference list
+//		QuestionKeywordReferenceListBuilder builder = QuestionKeywordReferenceListBuilder
+//				.newQuestionKeywordReferenceListBuilder();
+//		for (KeywordEntity keywordEntity : keywordEntites) {
+//
+//			// Get the list of KeywordQuestion objects
+//			List<KeywordQuestion> keywordQuestions = keywordEntity
+//					.getQuestions();
+//
+//			// Iterate through the list of KeywordQuestion objects and build the
+//			// reference list
+//			for (KeywordQuestion keywordQuestion : keywordQuestions) {
+//				
+//				// Create a reference from the keyword question
+//				QuestionKeywordReference questionKeywordReference = QuestionKeywordReference
+//						.newQuestionKeywordReference(keywordQuestion);
+//				
+//				// Add the reference via the builder
+//				builder = builder.addQuestionKeywordReference(questionKeywordReference);
+//			}
+//		}
+//
+//		// Return the list of references
+//		return builder.getQuestionKeywordReferenceList();
+//	}
+//	
+//	public List<String> findKeywordsByQuestionId(int questionId) {
+//		
+//		
+//		// Search for matches on question id using dot notation
+//		// Query for all of the KeywordQuestion objects associated to the
+//		// keywords
+//		Query<KeywordEntity> keywordEntityQuery = createQuery().field("questions.questionId").equal(questionId);
+//		List<KeywordEntity> keywordEntites = keywordEntityQuery.asList();
+//
+//		List<String> keywordList = new ArrayList<String>();
+//		for (KeywordEntity keywordEntity : keywordEntites) {
+//			keywordList.add(keywordEntity.getKeyword());
+//		}
+//
+//		return keywordList;
+//	}
+
+	private SongDao(Datastore datastore) {
+		this.datastore = datastore;
+	}
+}
