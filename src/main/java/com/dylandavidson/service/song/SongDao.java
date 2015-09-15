@@ -1,8 +1,13 @@
 package com.dylandavidson.service.song;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
@@ -18,12 +23,36 @@ public class SongDao {
 
 	public static SongDao newSongDao() throws UnknownHostException {
 
+		Properties prop = new Properties();
+		InputStream input = null;
+		
+		try {
+			input = new FileInputStream("/Users/dylan/config.properties");
+			
+			// load a properties file
+			try {
+				prop.load(input);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			// get the property value and print it out
+			System.out.println(prop.getProperty("database"));
+			System.out.println(prop.getProperty("dbuser"));
+			System.out.println(prop.getProperty("dbpassword"));
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		Morphia morphia = new Morphia();
 		ServerAddress serverAddress = new ServerAddress(
 				"ds029793.mongolab.com", 29793);
 		List<MongoCredential> credentialsList = new ArrayList<MongoCredential>();
 		MongoCredential credentia = MongoCredential.createCredential(
-		    "dylan", "song-service", "dylan".toCharArray());
+		    prop.getProperty("dbuser"), prop.getProperty("database"), prop.getProperty("dbpassword").toCharArray());
 		credentialsList.add(credentia);
 		MongoClient client = new MongoClient(serverAddress, credentialsList);
 		Datastore datastore = morphia.createDatastore(client, "song-service");
@@ -33,6 +62,12 @@ public class SongDao {
 
 	public void saveSong(SongDO songDo) {
 		this.datastore.save(songDo);
+	}
+	
+	public List<SongDO> findSongs(SongQuery songQuery){
+		Query<SongDO> q = this.datastore.createQuery(SongDO.class).field("name").hasAnyOf(songQuery.getNames());
+		List<SongDO> songDOList = q.asList();
+		return songDOList;
 	}
 
 //	public KeywordEntity getKeyword(String keyword) {
