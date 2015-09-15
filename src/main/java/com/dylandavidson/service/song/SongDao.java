@@ -36,11 +36,11 @@ public class SongDao {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
-			// get the property value and print it out
-			System.out.println(prop.getProperty("database"));
-			System.out.println(prop.getProperty("dbuser"));
-			System.out.println(prop.getProperty("dbpassword"));
+//
+//			// get the property value and print it out
+//			System.out.println(prop.getProperty("database"));
+//			System.out.println(prop.getProperty("dbuser"));
+//			System.out.println(prop.getProperty("dbpassword"));
 			
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -65,7 +65,23 @@ public class SongDao {
 	}
 	
 	public List<SongDO> findSongs(SongQuery songQuery){
-		Query<SongDO> q = this.datastore.createQuery(SongDO.class).field("name").hasAnyOf(songQuery.getNames());
+		Query<SongDO> q = this.datastore.createQuery(SongDO.class);
+		if(songQuery.getNames()!=null && !songQuery.getNames().isEmpty()){
+			q.field("name").hasAnyOf(songQuery.getNames());
+		}
+		if(songQuery.getArtists()!=null && !songQuery.getArtists().isEmpty()){
+			q.field("artist").hasAnyOf(songQuery.getArtists());
+		}
+		if(songQuery.getGenres()!=null && !songQuery.getGenres().isEmpty()){
+			q.field("genre").hasAnyOf(songQuery.getGenres());
+		}
+		if(songQuery.getOriginal()!=null){
+			q.field("original").equal(songQuery.getOriginal());
+		}
+		if(songQuery.getFromYear()!=null && songQuery.getToYear()!=null){
+			q.field("year").greaterThanOrEq(songQuery.getFromYear());
+			q.field("year").lessThanOrEq(songQuery.getToYear());
+		}
 		List<SongDO> songDOList = q.asList();
 		return songDOList;
 	}

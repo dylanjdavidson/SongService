@@ -84,4 +84,13 @@ public class SongQuery {
 	public void setOriginal(Boolean original) {
 		this.original = original;
 	}
+
+	public Date getFromYear() {
+		return fromYear;
+	}
+
+	public Date getToYear() {
+		return toYear;
+	}
+	
 }

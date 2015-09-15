@@ -67,7 +67,7 @@ public class SongDO {
 		this.genre = genre;
 	}
 
-	public boolean isOriginal() {
+	public boolean getOriginal() {
 		return original;
 	}
 
