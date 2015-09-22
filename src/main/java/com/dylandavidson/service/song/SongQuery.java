@@ -1,5 +1,7 @@
 package com.dylandavidson.service.song;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,18 +14,25 @@ public class SongQuery {
 	private List<String> genres=null;
 	private Boolean original=null;
 	
+	private final static SimpleDateFormat FORMATTER = new SimpleDateFormat(
+			"yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+	
 	public SongQuery(){
 		
 	}
 	
-	public void setYear(Date year){
-		fromYear=year;
-		toYear=year;
+	public void setYear(int year) throws ParseException{
+		Date d = FORMATTER.parse(Integer.toString(year) + "-01-01T00:00:00.000-0700");
+		Date e = FORMATTER.parse(Integer.toString(year) + "-12-31T00:00:00.000-0700");
+		fromYear=d;
+		toYear=e;
 	}
 	
-	public void setYear(Date fromYear, Date toYear){
-		this.fromYear=fromYear;
-		this.toYear=toYear;
+	public void setYear(int from, int to) throws ParseException{
+		Date d = FORMATTER.parse(Integer.toString(from) + "-01-01T00:00:00.000-0700");
+		Date e = FORMATTER.parse(Integer.toString(to) + "-12-31T00:00:00.000-0700");
+		fromYear=d;
+		toYear=e;
 	}
 
 

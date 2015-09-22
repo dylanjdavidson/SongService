@@ -34,7 +34,7 @@ public class SongDao {
 				prop.load(input);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 //
 //			// get the property value and print it out
