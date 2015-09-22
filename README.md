@@ -15,7 +15,7 @@ This is an example program I developed to get experience using MongoDB. It demon
  * Genre(s)
  * Original (this is specific to my dad's youtube channel where some songs are originals while others are covers)
 
-* [SongDaoTest](https://github.com/dylanjdavidson/SongService/blob/master/src/test/java/com/dylandavidson/service/song/SongDaoTest.java): Performed tests to verify the [SongDao.java][SongDao] operations and in turn verified [SongDO.java][SongDO] and [SongQuery.java][SongQuery].
+* [SongDaoTest](https://github.com/dylanjdavidson/SongService/blob/master/src/test/java/com/dylandavidson/service/song/SongDaoTest.java): Performed tests to verify the [SongDao][SongDao] operations and in turn verified [SongDO][SongDO] and [SongQuery][SongQuery].
 
 [SongDO]: https://github.com/dylanjdavidson/SongService/blob/master/src/main/java/com/dylandavidson/service/song/SongDO.java
 [SongDao]: https://github.com/dylanjdavidson/SongService/blob/master/src/main/java/com/dylandavidson/service/song/SongDao.java
