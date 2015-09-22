@@ -17,6 +17,20 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 
+/**
+ * A data access object class which provides all the key operations to insert and
+ * retrieve data from the database.
+ * 
+ * I used a MongoLab sandbox database instance to manage the collection of songs
+ * used for testing.
+ * 
+ * I used a local property file to hold the database name, username, and
+ * password to avoid checking them into GitHub.
+ * 
+ * @author dylan
+ * 
+ */
+
 public class SongDao {
 
 	private final Datastore datastore;
@@ -25,130 +39,63 @@ public class SongDao {
 
 		Properties prop = new Properties();
 		InputStream input = null;
-		
+
 		try {
 			input = new FileInputStream("/Users/dylan/config.properties");
-			
+
 			// load a properties file
 			try {
 				prop.load(input);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				//e.printStackTrace();
+				e.printStackTrace();
 			}
-//
-//			// get the property value and print it out
-//			System.out.println(prop.getProperty("database"));
-//			System.out.println(prop.getProperty("dbuser"));
-//			System.out.println(prop.getProperty("dbpassword"));
-			
+
+
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		Morphia morphia = new Morphia();
 		ServerAddress serverAddress = new ServerAddress(
 				"ds029793.mongolab.com", 29793);
 		List<MongoCredential> credentialsList = new ArrayList<MongoCredential>();
-		MongoCredential credentia = MongoCredential.createCredential(
-		    prop.getProperty("dbuser"), prop.getProperty("database"), prop.getProperty("dbpassword").toCharArray());
+		MongoCredential credentia = MongoCredential.createCredential(prop
+				.getProperty("dbuser"), prop.getProperty("database"), prop
+				.getProperty("dbpassword").toCharArray());
 		credentialsList.add(credentia);
 		MongoClient client = new MongoClient(serverAddress, credentialsList);
 		Datastore datastore = morphia.createDatastore(client, "song-service");
-		
+
 		return new SongDao(datastore);
 	}
 
 	public void saveSong(SongDO songDo) {
 		this.datastore.save(songDo);
 	}
-	
-	public List<SongDO> findSongs(SongQuery songQuery){
+
+	public List<SongDO> findSongs(SongQuery songQuery) {
 		Query<SongDO> q = this.datastore.createQuery(SongDO.class);
-		if(songQuery.getNames()!=null && !songQuery.getNames().isEmpty()){
+		if (songQuery.getNames() != null && !songQuery.getNames().isEmpty()) {
 			q.field("name").hasAnyOf(songQuery.getNames());
 		}
-		if(songQuery.getArtists()!=null && !songQuery.getArtists().isEmpty()){
+		if (songQuery.getArtists() != null && !songQuery.getArtists().isEmpty()) {
 			q.field("artist").hasAnyOf(songQuery.getArtists());
 		}
-		if(songQuery.getGenres()!=null && !songQuery.getGenres().isEmpty()){
+		if (songQuery.getGenres() != null && !songQuery.getGenres().isEmpty()) {
 			q.field("genre").hasAnyOf(songQuery.getGenres());
 		}
-		if(songQuery.getOriginal()!=null){
+		if (songQuery.getOriginal() != null) {
 			q.field("original").equal(songQuery.getOriginal());
 		}
-		if(songQuery.getFromYear()!=null && songQuery.getToYear()!=null){
-			q.field("year").greaterThanOrEq(songQuery.getFromYear());
-			q.field("year").lessThanOrEq(songQuery.getToYear());
+		if (songQuery.getFrom() != null && songQuery.getTo() != null) {
+			q.field("year").greaterThanOrEq(songQuery.getFrom());
+			q.field("year").lessThanOrEq(songQuery.getTo());
 		}
 		List<SongDO> songDOList = q.asList();
 		return songDOList;
 	}
-
-//	public KeywordEntity getKeyword(String keyword) {
-//		return this.datastore.get(KeywordEntity.class, keyword);
-//	}
-//
-//	public void deleteQuestion(String keyword) {
-//		this.datastore.delete(KeywordEntity.class, keyword);
-//	}
-//
-//	public Query<KeywordEntity> createQuery() {
-//		return this.datastore.createQuery(KeywordEntity.class);
-//	}
-//
-//	public List<QuestionKeywordReference> findReferenceByKeywordList(
-//			List<String> keywords) {
-//
-//		// Query for all of the KeywordQuestion objects associated to the
-//		// keywords
-//		Query<KeywordEntity> keywordEntityQuery = createQuery().field("_id").hasAnyOf(keywords);
-//		List<KeywordEntity> keywordEntites = keywordEntityQuery.asList();
-//
-//		// Iterate through the keyword entities and build a
-//		// QuestionKeywordReference list
-//		QuestionKeywordReferenceListBuilder builder = QuestionKeywordReferenceListBuilder
-//				.newQuestionKeywordReferenceListBuilder();
-//		for (KeywordEntity keywordEntity : keywordEntites) {
-//
-//			// Get the list of KeywordQuestion objects
-//			List<KeywordQuestion> keywordQuestions = keywordEntity
-//					.getQuestions();
-//
-//			// Iterate through the list of KeywordQuestion objects and build the
-//			// reference list
-//			for (KeywordQuestion keywordQuestion : keywordQuestions) {
-//				
-//				// Create a reference from the keyword question
-//				QuestionKeywordReference questionKeywordReference = QuestionKeywordReference
-//						.newQuestionKeywordReference(keywordQuestion);
-//				
-//				// Add the reference via the builder
-//				builder = builder.addQuestionKeywordReference(questionKeywordReference);
-//			}
-//		}
-//
-//		// Return the list of references
-//		return builder.getQuestionKeywordReferenceList();
-//	}
-//	
-//	public List<String> findKeywordsByQuestionId(int questionId) {
-//		
-//		
-//		// Search for matches on question id using dot notation
-//		// Query for all of the KeywordQuestion objects associated to the
-//		// keywords
-//		Query<KeywordEntity> keywordEntityQuery = createQuery().field("questions.questionId").equal(questionId);
-//		List<KeywordEntity> keywordEntites = keywordEntityQuery.asList();
-//
-//		List<String> keywordList = new ArrayList<String>();
-//		for (KeywordEntity keywordEntity : keywordEntites) {
-//			keywordList.add(keywordEntity.getKeyword());
-//		}
-//
-//		return keywordList;
-//	}
 
 	private SongDao(Datastore datastore) {
 		this.datastore = datastore;

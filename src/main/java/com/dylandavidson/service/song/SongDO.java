@@ -4,28 +4,39 @@ import java.util.Date;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 
+/**
+ * A data object class (a MongoDB entity) that represents the key properties of
+ * a song. SongDO objects are uniquely identified in the song database by their
+ * url. This class features a factory method for easy SongDO construction.
+ * 
+ * @author dylan
+ * 
+ */
+
 @Entity("songs")
 public class SongDO {
-	private @Id String url;
+	private @Id
+	String url;
 	private Date year;
 	private String name;
 	private String artist;
 	private String genre;
 	private boolean original;
-	
-	public SongDO(){
-		
+
+	public SongDO() {
+
 	}
-	
-	public SongDO(String url, Date year, String name, String artist, String genre, boolean original){
-		this.url=url;
-		this.year=year;
-		this.name=name;
-		this.artist=artist;
-		this.genre=genre;
-		this.original=original;
+
+	public SongDO(String url, Date year, String name, String artist,
+			String genre, boolean original) {
+		this.url = url;
+		this.year = year;
+		this.name = name;
+		this.artist = artist;
+		this.genre = genre;
+		this.original = original;
 	}
-	
+
 	public Date getYear() {
 		return year;
 	}
@@ -42,7 +53,6 @@ public class SongDO {
 		this.year = year;
 	}
 
-	
 	public String getName() {
 		return name;
 	}
@@ -74,6 +84,5 @@ public class SongDO {
 	public void setOriginal(boolean origional) {
 		this.original = origional;
 	}
-
 
 }
